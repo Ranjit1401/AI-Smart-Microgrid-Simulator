@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <title>AI Microgrid Simulator</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+
+  <!-- ✅ TOPBAR IN FRAME -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <div class="topbar-title">🔋 AI Smart Microgrid Simulator</div>
+        <div class="topbar-subtitle">SDG 7 – Affordable & Clean Energy</div>
+      </div>
+
+      <div class="topbar-right">
+        <button id="themeBtn" class="btn secondary">🌙 Dark Mode</button>
+
+        <button id="downloadJsonBtn" class="btn">📥 JSON</button>
+        <button id="downloadTxtBtn" class="btn">📄 TXT</button>
+        <button id="exportCsvBtn" class="btn">📊 CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Sidebar + Content Layout -->
+  <div class="layout">
+
+    <!-- ✅ Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-title">📌 Navigation</div>
+
+      <a class="nav-link active" href="#dashboard">🏠 Dashboard</a>
+      <a class="nav-link" href="#reports">📊 Reports</a>
+      <a class="nav-link" href="#about">🌍 About</a>
+    </aside>
+
+    <!-- ✅ Main Content -->
+    <main class="content">
+
+      <!-- ✅ DASHBOARD SECTION -->
+      <section id="dashboard">
+
+        <div class="status-row">
+          <div class="status-badge" id="serverStatus">🟢 Server Online</div>
+          <div class="status-badge auto" id="autoStatus">⏹ Auto Run: OFF</div>
+          <div class="status-badge auto" id="shortageCountBadge">⚠️ Shortages: 0</div>
+        </div>
+
+        <div class="controls">
+          <div class="control">
+            <label>Weather</label>
+            <select id="weather">
+              <option value="auto">Auto (Real Weather)</option>
+              <option value="sunny">Sunny</option>
+              <option value="cloudy">Cloudy</option>
+              <option value="rainy">Rainy</option>
+            </select>
+          </div>
+
+          <div class="control">
+            <label>Number of Homes</label>
+            <input type="number" id="homesCount" value="20" min="5" max="200" />
+          </div>
+
+          <div class="control">
+            <label>Battery Capacity (kWh)</label>
+            <input type="number" id="batteryCap" value="10" min="5" max="100" />
+          </div>
+
+          <div class="control">
+            <label>Auto Run Interval</label>
+            <select id="interval">
+              <option value="5000">5 sec</option>
+              <option value="10000">10 sec</option>
+              <option value="30000">30 sec</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="runBtn" class="btn">
+            <span id="runText">Run Simulation</span>
+            <span id="loader" class="loader hidden"></span>
+          </button>
+
+          <button id="autoBtn" class="btn secondary">▶ Auto Run</button>
+          <button id="clearHistoryBtn" class="btn danger">🗑 Clear History</button>
+        </div>
+
+        <div class="grid">
+          <div class="stat-card">
+            <div class="label">Current Time</div>
+            <div class="value" id="timeValue">--</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Hour</div>
+            <div class="value" id="hourValue">--</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Cloud Cover</div>
+            <div class="value" id="cloudValue">--</div>
+            <div class="unit">%</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Sunrise</div>
+            <div class="value" id="sunriseValue">--</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Sunset</div>
+            <div class="value" id="sunsetValue">--</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Solar Power</div>
+            <div class="value" id="solarValue">--</div>
+            <div class="unit">kW</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Battery Level</div>
+            <div class="value" id="batteryValue">--</div>
+            <div class="unit">%</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Total Demand</div>
+            <div class="value" id="demandValue">--</div>
+            <div class="unit">kW</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="label">Total Supply</div>
+            <div class="value" id="supplyValue">--</div>
+            <div class="unit">kW</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>⚡ Power Distribution</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Load</th>
+                <th>Allocated Power (kW)</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>🏥 Hospital</td>
+                <td id="hospitalValue">--</td>
+                <td><span class="tag high">High</span></td>
+              </tr>
+              <tr>
+                <td>🏫 School</td>
+                <td id="schoolValue">--</td>
+                <td><span class="tag medium">Medium</span></td>
+              </tr>
+              <tr>
+                <td>🏠 Homes</td>
+                <td id="homesValue">--</td>
+                <td><span class="tag low">Low</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>📈 Demand vs Supply Trend (Last 10 Runs)</h2>
+          <canvas id="trendChart" height="120"></canvas>
+        </div>
+
+        <div class="card">
+          <h2>📊 Microgrid Power Graph</h2>
+          <canvas id="powerChart" height="120"></canvas>
+        </div>
+
+        <div class="card">
+          <h2>🧠 AI Suggestions</h2>
+          <ul id="suggestions" class="suggestions">
+            <li>Click "Run Simulation" to get AI suggestions.</li>
+          </ul>
+        </div>
+
+        <div id="alertBox" class="alert">Click "Run Simulation"</div>
+      </section>
+
+      <!-- ✅ REPORTS SECTION -->
+      <section id="reports">
+        <div class="card">
+          <h2>🕒 Simulation History (Last 10 Runs)</h2>
+          <table class="table" id="historyTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Hour</th>
+                <th>Weather</th>
+                <th>Homes</th>
+                <th>Demand (kW)</th>
+                <th>Supply (kW)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody id="historyBody">
+              <tr>
+                <td colspan="7">Run simulation to start history...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card about-card">
+          <h2>🤖 Explain AI in this Project</h2>
+          <p id="aiExplainText">Run simulation to see AI explanation.</p>
+        </div>
+      </section>
+
+      <!-- ✅ ABOUT SECTION -->
+      <section id="about">
+        <div class="card about-card">
+          <h2>🌍 About this Project</h2>
+          <p>
+            This AI Smart Microgrid Simulator demonstrates how renewable energy (solar) and battery storage can be managed
+            efficiently using intelligent decision-making. It prioritizes critical loads like hospitals during energy shortages
+            and provides AI-based suggestions to improve system stability.
+          </p>
+
+          <div class="sdg-tags">
+            <span class="sdg">SDG 7: Affordable & Clean Energy</span>
+            <span class="sdg">AI Decision System</span>
+            <span class="sdg">Real Weather (API)</span>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div>⚡ AI Smart Microgrid Simulator</div>
+          <div class="footer-small">Made for SDG 7 • Real Weather + Smart Decision System</div>
+        </footer>
+      </section>
+
+      <!-- ✅ Audio alert -->
+      <audio id="alertSound">
+        <source src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" type="audio/ogg">
+      </audio>
+
+    </main>
+  </div>
+
+  <!-- ✅ Scroll to Top Button -->
+  <button id="scrollTopBtn" class="scroll-top">⬆</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/static/script.js"></script>
+</body>
+</html>
