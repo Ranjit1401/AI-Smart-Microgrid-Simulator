@@ -1,6 +1,7 @@
 import random
 import requests
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 # ✅ Auto location (Kurduvadi, Maharashtra)
@@ -64,7 +65,7 @@ def simulate_microgrid(weather="auto", homes=20, battery_cap=10, lat=DEFAULT_LAT
     """
 
     # ✅ Real time
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Asia/Kolkata"))
     hour = now.hour
     minute = now.minute
     second = now.second
