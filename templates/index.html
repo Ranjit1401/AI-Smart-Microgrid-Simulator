@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -192,6 +193,63 @@
           </ul>
         </div>
 
+        <div class="card">
+          <h2>⏳ AI Forecast (Next 6 Hours)</h2>
+
+          <div class="btn-row">
+            <button id="forecastBtn" class="btn secondary">📈 Generate Forecast</button>
+          </div>
+
+          <div id="forecastSummary" class="agent-reply">Click generate forecast...</div>
+
+          <table class="table" id="forecastTable">
+            <thead>
+              <tr>
+                <th>Hour</th>
+                <th>Solar (kW)</th>
+                <th>Demand (kW)</th>
+                <th>Supply (kW)</th>
+                <th>Risk</th>
+              </tr>
+            </thead>
+            <tbody id="forecastBody">
+              <tr>
+                <td colspan="5">No forecast yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2>📝 AI Report Generator</h2>
+
+          <div class="btn-row">
+            <button id="reportBtn" class="btn">🧾 Generate Full Report</button>
+            <button id="copyReportBtn" class="btn secondary">📋 Copy Report</button>
+          </div>
+
+          <div id="reportBox" class="agent-reply">
+            Click "Generate Full Report" to create your submission report.
+          </div>
+        </div>
+
+
+
+        <div class="card">
+          <h2>⚡Ask AI Agent (Groq)</h2>
+
+          <div class="agent-box">
+            <input id="agentInput" class="agent-input" placeholder="Ask: Why shortage happened? How to fix it?" />
+            <button id="agentBtn" class="btn secondary">Ask</button>
+            <button id="tuneBtn" class="btn">⚙️ Auto Tune</button>
+          </div>
+
+          <div id="agentReply" class="agent-reply">Ask something to get AI response...</div>
+          <div id="tuneReply" class="agent-reply">Auto Tune will suggest best settings for stable microgrid.</div>
+        </div>
+
+
+
         <div id="alertBox" class="alert">Click "Run Simulation"</div>
       </section>
 
@@ -231,8 +289,10 @@
         <div class="card about-card">
           <h2>🌍 About this Project</h2>
           <p>
-            This AI Smart Microgrid Simulator demonstrates how renewable energy (solar) and battery storage can be managed
-            efficiently using intelligent decision-making. It prioritizes critical loads like hospitals during energy shortages
+            This AI Smart Microgrid Simulator demonstrates how renewable energy (solar) and battery storage can be
+            managed
+            efficiently using intelligent decision-making. It prioritizes critical loads like hospitals during energy
+            shortages
             and provides AI-based suggestions to improve system stability.
           </p>
 
@@ -263,4 +323,5 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/static/script.js"></script>
 </body>
+
 </html>

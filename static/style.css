@@ -520,3 +520,31 @@ body.dark .sdg{
     justify-content: flex-start;
   }
 }
+.agent-box{
+  display:flex;
+  gap:10px;
+  margin-top: 12px;
+}
+
+.agent-input{
+  flex:1;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  outline: none;
+  font-weight: 800;
+}
+
+.agent-reply{
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #f3f4f6;
+  font-weight: 800;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+body.dark .agent-reply{
+  background: rgba(255,255,255,0.06);
+}

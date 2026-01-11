@@ -56,6 +56,94 @@ const historyBody = document.getElementById("historyBody");
 // =========================
 const scrollTopBtn = document.getElementById("scrollTopBtn");
 
+const agentBtn = document.getElementById("agentBtn");
+const agentInput = document.getElementById("agentInput");
+const agentReply = document.getElementById("agentReply");
+
+const tuneBtn = document.getElementById("tuneBtn");
+const tuneReply = document.getElementById("tuneReply");
+
+const forecastBtn = document.getElementById("forecastBtn");
+const forecastSummary = document.getElementById("forecastSummary");
+const forecastBody = document.getElementById("forecastBody");
+
+const reportBtn = document.getElementById("reportBtn");
+const copyReportBtn = document.getElementById("copyReportBtn");
+const reportBox = document.getElementById("reportBox");
+
+
+tuneBtn.addEventListener("click", async () => {
+  tuneReply.textContent = "⚙️ Auto tuning in progress...";
+  tuneBtn.disabled = true;
+
+  try {
+    const res = await fetch("/agent/tune", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      tuneReply.textContent = "❌ Tune failed: " + (data.message || "Unknown error");
+      if (data.raw) tuneReply.textContent += "\n\nRAW:\n" + data.raw;
+      tuneBtn.disabled = false;
+      return;
+    }
+
+    const rec = data.recommended;
+
+    // ✅ Apply recommended settings to UI inputs
+    if (rec.weather) document.getElementById("weather").value = rec.weather;
+    if (rec.homes) document.getElementById("homesCount").value = rec.homes;
+    if (rec.batteryCap) document.getElementById("batteryCap").value = rec.batteryCap;
+    if (rec.interval) document.getElementById("interval").value = rec.interval;
+
+    tuneReply.textContent =
+      "✅ Applied Auto-Tune Settings:\n" +
+      `• Weather: ${rec.weather}\n` +
+      `• Homes: ${rec.homes}\n` +
+      `• Battery: ${rec.batteryCap} kWh\n` +
+      `• Auto Run Interval: ${rec.interval / 1000} sec\n\n` +
+      "Reason:\n" + data.reason;
+
+    // ✅ Run simulation automatically after tuning
+    runSimulation();
+
+  } catch (err) {
+    console.error(err);
+    tuneReply.textContent = "❌ Auto Tune error. Check backend / GROQ_API_KEY.";
+  }
+
+  tuneBtn.disabled = false;
+});
+
+
+agentBtn.addEventListener("click", async () => {
+  const q = agentInput.value.trim();
+  if (!q) return;
+
+  agentReply.textContent = "🤖 Thinking...";
+  agentBtn.disabled = true;
+
+  try {
+    const res = await fetch("/agent/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: q })
+    });
+
+    const data = await res.json();
+    agentReply.textContent = data.reply || "No reply.";
+  } catch (err) {
+    console.error(err);
+    agentReply.textContent = "❌ Agent error. Check backend/API key.";
+  }
+
+  agentBtn.disabled = false;
+});
+
+
 window.addEventListener("scroll", () => {
   if (window.scrollY > 300) {
     scrollTopBtn.classList.add("show");
@@ -427,3 +515,85 @@ downloadTxtBtn.addEventListener("click", () => {
 autoStatus.textContent = "⏹ Auto Run: OFF";
 serverStatus.textContent = "🟢 Server Online";
 shortageCountBadge.textContent = "⚠️ Shortages: 0";
+
+forecastBtn.addEventListener("click", async () => {
+  forecastSummary.textContent = "⏳ Generating forecast...";
+  forecastBtn.disabled = true;
+
+  try {
+    const res = await fetch("/agent/forecast", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      forecastSummary.textContent = "❌ Forecast error: " + (data.message || "Unknown");
+      if (data.raw) forecastSummary.textContent += "\n\nRAW:\n" + data.raw;
+      forecastBtn.disabled = false;
+      return;
+    }
+
+    forecastSummary.textContent = "✅ " + data.summary;
+
+    // Fill table
+    forecastBody.innerHTML = "";
+
+    data.forecast.forEach((f) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${f.hour}</td>
+        <td>${f.solar_kw}</td>
+        <td>${f.demand_kw}</td>
+        <td>${f.supply_kw}</td>
+        <td><b>${f.risk}</b></td>
+      `;
+
+      forecastBody.appendChild(tr);
+    });
+
+  } catch (err) {
+    console.error(err);
+    forecastSummary.textContent = "❌ Forecast failed. Check backend/Groq key.";
+  }
+
+  forecastBtn.disabled = false;
+});
+reportBtn.addEventListener("click", async () => {
+  reportBox.textContent = "🧠 Generating report...";
+  reportBtn.disabled = true;
+
+  try {
+    const res = await fetch("/agent/report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      reportBox.textContent = "❌ Report error: " + (data.message || "Unknown");
+      reportBtn.disabled = false;
+      return;
+    }
+
+    reportBox.textContent = data.report;
+
+  } catch (err) {
+    console.error(err);
+    reportBox.textContent = "❌ Report generation failed. Check backend/Groq key.";
+  }
+
+  reportBtn.disabled = false;
+});
+copyReportBtn.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(reportBox.textContent);
+    alert("✅ Report copied to clipboard!");
+  } catch (err) {
+    alert("❌ Copy failed (browser blocked clipboard).");
+  }
+});
+

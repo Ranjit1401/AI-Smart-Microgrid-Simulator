@@ -2,6 +2,11 @@ from flask import Flask, render_template, jsonify, request, Response
 from microgrid import simulate_microgrid
 import json
 from datetime import datetime
+import os
+from groq import Groq
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
 
 app = Flask(__name__)
 
@@ -91,6 +96,216 @@ def download_txt():
         mimetype="text/plain",
         headers={"Content-Disposition": f"attachment;filename={filename}"}
     )
+
+@app.route("/agent/ask", methods=["POST"])
+def agent_ask():
+    global LAST_RESULT
+
+    if not LAST_RESULT:
+        return jsonify({"reply": "Run simulation first so I can analyze your microgrid data."})
+
+    data = request.get_json()
+    question = data.get("question", "").strip()
+
+    if not question:
+        return jsonify({"reply": "Please type a question."})
+
+    system_prompt = """
+You are MicrogridAI Agent.
+You help users understand microgrid simulation results and give recommendations.
+Be simple, practical, and short.
+If shortage is detected, give actionable steps.
+"""
+
+    user_prompt = f"""
+Microgrid Latest Data (JSON):
+{json.dumps(LAST_RESULT, indent=2)}
+
+User Question:
+{question}
+
+Answer in simple words and bullet points.
+"""
+
+    resp = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.4,
+        max_tokens=400
+    )
+
+    reply = resp.choices[0].message.content
+    return jsonify({"reply": reply})
+
+@app.route("/agent/tune", methods=["POST"])
+def agent_tune():
+    global LAST_RESULT
+
+    if not LAST_RESULT:
+        return jsonify({
+            "ok": False,
+            "message": "Run simulation first so I can tune the microgrid."
+        })
+
+    system_prompt = """
+You are MicrogridAI Auto-Tuning Agent.
+Return ONLY valid JSON, no extra text.
+
+Rules:
+- If shortage exists, increase battery_cap and reduce homes.
+- If stable, keep tuning minimal.
+- Keep values realistic for demo.
+
+Output JSON schema:
+{
+  "recommended": {
+    "weather": "auto",
+    "homes": 20,
+    "batteryCap": 12,
+    "interval": 10000
+  },
+  "reason": "short clear explanation"
+}
+"""
+
+    user_prompt = f"""
+Latest Microgrid Data (JSON):
+{json.dumps(LAST_RESULT, indent=2)}
+
+Tune the microgrid inputs to reduce shortage and stabilize the system.
+"""
+
+    resp = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.2,
+        max_tokens=350
+    )
+
+    text = resp.choices[0].message.content.strip()
+
+    # ✅ Safe JSON parsing
+    try:
+        result = json.loads(text)
+        return jsonify({"ok": True, **result})
+    except Exception:
+        return jsonify({
+            "ok": False,
+            "message": "Agent returned invalid JSON",
+            "raw": text
+        })
+    
+@app.route("/agent/forecast", methods=["POST"])
+def agent_forecast():
+    global LAST_RESULT
+
+    if not LAST_RESULT:
+        return jsonify({"ok": False, "message": "Run simulation first so I can forecast."})
+
+    system_prompt = """
+You are MicrogridAI Forecast Agent.
+Return ONLY JSON (no markdown, no extra text).
+Forecast next 6 hours based on latest microgrid data.
+
+Output JSON schema:
+{
+  "forecast": [
+    {"hour": 18, "solar_kw": 2.4, "demand_kw": 11.1, "supply_kw": 7.9, "risk": "HIGH"},
+    ...
+  ],
+  "summary": "short summary"
+}
+Rules:
+- solar goes down at evening/night
+- demand increases in evening (6pm-11pm peak)
+- keep values realistic
+- risk can be LOW/MEDIUM/HIGH
+"""
+
+    user_prompt = f"""
+Latest Microgrid Data (JSON):
+{json.dumps(LAST_RESULT, indent=2)}
+
+Generate next 6 hour forecast.
+"""
+
+    resp = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.3,
+        max_tokens=500
+    )
+
+    text = resp.choices[0].message.content.strip()
+
+    try:
+        result = json.loads(text)
+        return jsonify({"ok": True, **result})
+    except Exception:
+        return jsonify({
+            "ok": False,
+            "message": "Agent returned invalid JSON",
+            "raw": text
+        })
+    
+@app.route("/agent/report", methods=["POST"])
+def agent_report():
+    global LAST_RESULT
+
+    if not LAST_RESULT:
+        return jsonify({"ok": False, "message": "Run simulation first so I can generate report."})
+
+    system_prompt = """
+You are MicrogridAI Report Generator.
+Write a clean, professional report for hackathon/college SDG project.
+Keep it structured and clear. Use headings and bullet points.
+Do NOT include JSON, just plain text.
+"""
+
+    user_prompt = f"""
+Generate a detailed project report based on latest microgrid simulation data:
+
+SIMULATION DATA (JSON):
+{json.dumps(LAST_RESULT, indent=2)}
+
+Include:
+1) Title
+2) Problem Statement
+3) Solution Overview
+4) AI Used in Project
+5) Current Simulation Summary
+6) Forecast risk (general)
+7) SDG 7 impact
+8) Future Improvements
+Make it easy to paste into PPT/report.
+"""
+
+    resp = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.35,
+        max_tokens=900
+    )
+
+    reply = resp.choices[0].message.content.strip()
+
+    return jsonify({"ok": True, "report": reply})
+
+
+
+
 
 
 if __name__ == "__main__":
