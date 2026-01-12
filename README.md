@@ -45,9 +45,7 @@ Uses real-time weather conditions (cloud cover, sunrise, sunset) via **Open-Mete
 ✅ AI in this project is implemented as an **Intelligent Decision System**:
 - The system detects shortage situations
 - Automatically allocates limited energy using priority
-- Generates AI suggestions to improve stability (reduce demand / increase battery / add solar panels)
-
-> Note: This is **Rule-based AI / Expert System AI** used in real-world control systems.
+- Generates AI suggestions to improve stability (reduce demand / increase battery / add solar panels
 
 ---
 
