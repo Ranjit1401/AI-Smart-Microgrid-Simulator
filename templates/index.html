@@ -152,109 +152,110 @@
 
         <div class="card">
           <h2>⚡ Power Distribution</h2>
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Load</th>
-                <th>Allocated Power (kW)</th>
-                <th>Priority</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>🏥 Hospital</td>
-                <td id="hospitalValue">--</td>
-                <td><span class="tag high">High</span></td>
-              </tr>
-              <tr>
-                <td>🏫 School</td>
-                <td id="schoolValue">--</td>
-                <td><span class="tag medium">Medium</span></td>
-              </tr>
-              <tr>
-                <td>🏠 Homes</td>
-                <td id="homesValue">--</td>
-                <td><span class="tag low">Low</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card">
-          <h2>📈 Demand vs Supply Trend (Last 10 Runs)</h2>
-          <canvas id="trendChart" height="120"></canvas>
-        </div>
-
-        <div class="card">
-          <h2>📊 Microgrid Power Graph</h2>
-          <canvas id="powerChart" height="120"></canvas>
-        </div>
-
-        <div class="card">
-          <h2>🧠 AI Suggestions</h2>
-          <ul id="suggestions" class="suggestions">
-            <li>Click "Run Simulation" to get AI suggestions.</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h2>⏳ AI Forecast (Next 6 Hours)</h2>
-
-          <div class="btn-row">
-            <button id="forecastBtn" class="btn secondary">📈 Generate Forecast</button>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Load</th>
+                  <th>Allocated Power (kW)</th>
+                  <th>Priority</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>🏥 Hospital</td>
+                  <td id="hospitalValue">--</td>
+                  <td><span class="tag high">High</span></td>
+                </tr>
+                <tr>
+                  <td>🏫 School</td>
+                  <td id="schoolValue">--</td>
+                  <td><span class="tag medium">Medium</span></td>
+                </tr>
+                <tr>
+                  <td>🏠 Homes</td>
+                  <td id="homesValue">--</td>
+                  <td><span class="tag low">Low</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <div id="forecastSummary" class="agent-reply">Click generate forecast...</div>
-
-          <table class="table" id="forecastTable">
-            <thead>
-              <tr>
-                <th>Hour</th>
-                <th>Solar (kW)</th>
-                <th>Demand (kW)</th>
-                <th>Supply (kW)</th>
-                <th>Risk</th>
-              </tr>
-            </thead>
-            <tbody id="forecastBody">
-              <tr>
-                <td colspan="5">No forecast yet.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card">
-          <h2>📝 AI Report Generator</h2>
-
-          <div class="btn-row">
-            <button id="reportBtn" class="btn">🧾 Generate Full Report</button>
-            <button id="copyReportBtn" class="btn secondary">📋 Copy Report</button>
+          <div class="card">
+            <h2>📈 Demand vs Supply Trend (Last 10 Runs)</h2>
+            <canvas id="trendChart" height="120"></canvas>
           </div>
 
-          <div id="reportBox" class="agent-reply">
-            Click "Generate Full Report" to create your submission report.
-          </div>
-        </div>
-
-
-
-        <div class="card">
-          <h2>⚡Ask AI Agent (Groq)</h2>
-
-          <div class="agent-box">
-            <input id="agentInput" class="agent-input" placeholder="Ask: Why shortage happened? How to fix it?" />
-            <button id="agentBtn" class="btn secondary">Ask</button>
-            <button id="tuneBtn" class="btn">⚙️ Auto Tune</button>
+          <div class="card">
+            <h2>📊 Microgrid Power Graph</h2>
+            <canvas id="powerChart" height="120"></canvas>
           </div>
 
-          <div id="agentReply" class="agent-reply">Ask something to get AI response...</div>
-          <div id="tuneReply" class="agent-reply">Auto Tune will suggest best settings for stable microgrid.</div>
-        </div>
+          <div class="card">
+            <h2>🧠 AI Suggestions</h2>
+            <ul id="suggestions" class="suggestions">
+              <li>Click "Run Simulation" to get AI suggestions.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>⏳ AI Forecast (Next 6 Hours)</h2>
+
+            <div class="btn-row">
+              <button id="forecastBtn" class="btn secondary">📈 Generate Forecast</button>
+            </div>
+
+            <div id="forecastSummary" class="agent-reply">Click generate forecast...</div>
+
+            <table class="table" id="forecastTable">
+              <thead>
+                <tr>
+                  <th>Hour</th>
+                  <th>Solar (kW)</th>
+                  <th>Demand (kW)</th>
+                  <th>Supply (kW)</th>
+                  <th>Risk</th>
+                </tr>
+              </thead>
+              <tbody id="forecastBody">
+                <tr>
+                  <td colspan="5">No forecast yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h2>📝 AI Report Generator</h2>
+
+            <div class="btn-row">
+              <button id="reportBtn" class="btn">🧾 Generate Full Report</button>
+              <button id="copyReportBtn" class="btn secondary">📋 Copy Report</button>
+            </div>
+
+            <div id="reportBox" class="agent-reply">
+              Click "Generate Full Report" to create your submission report.
+            </div>
+          </div>
 
 
 
-        <div id="alertBox" class="alert">Click "Run Simulation"</div>
+          <div class="card">
+            <h2>⚡Ask AI Agent (Groq)</h2>
+
+            <div class="agent-box">
+              <input id="agentInput" class="agent-input" placeholder="Ask: Why shortage happened? How to fix it?" />
+              <button id="agentBtn" class="btn secondary">Ask</button>
+              <button id="tuneBtn" class="btn">⚙️ Auto Tune</button>
+            </div>
+
+            <div id="agentReply" class="agent-reply">Ask something to get AI response...</div>
+            <div id="tuneReply" class="agent-reply">Auto Tune will suggest best settings for stable microgrid.</div>
+          </div>
+
+
+
+          <div id="alertBox" class="alert">Click "Run Simulation"</div>
       </section>
 
       <!-- ✅ REPORTS SECTION -->

@@ -548,3 +548,125 @@ body.dark .sdg{
 body.dark .agent-reply{
   background: rgba(255,255,255,0.06);
 }
+/* ============================
+   ✅ EXTRA RESPONSIVE FIXES
+============================ */
+
+/* Make layout padding smaller on mobile */
+@media (max-width: 768px) {
+  .layout {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .topbar-inner {
+    padding: 10px 12px;
+  }
+
+  .sidebar {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .card {
+    padding: 14px;
+    border-radius: 18px;
+  }
+}
+
+
+/* ✅ Make controls auto-fit instead of forcing 4 columns */
+@media (max-width: 992px) {
+  .controls {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* ✅ Make stats grid auto-fit */
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+
+/* ✅ Extra small screen fixes */
+@media (max-width: 480px) {
+  .topbar-title {
+    font-size: 16px;
+  }
+
+  .topbar-subtitle {
+    font-size: 12px;
+  }
+
+  .btn {
+    width: 100%;       /* buttons full width */
+    justify-content: center;
+    text-align: center;
+  }
+
+  .btn-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .status-row {
+    flex-direction: column;
+  }
+
+  .status-badge {
+    width: 100%;
+    text-align: center;
+  }
+
+  .value {
+    font-size: 26px;
+  }
+}
+
+
+/* ✅ Agent input responsive (stack on mobile) */
+@media (max-width: 650px) {
+  .agent-box {
+    flex-direction: column;
+  }
+
+  .agent-input {
+    width: 100%;
+  }
+}
+
+
+/* ✅ Table responsive: horizontal scroll */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  min-width: 650px; /* prevents table squishing */
+}
+
+/* Optional: make table padding smaller on mobile */
+@media (max-width: 650px) {
+  .table th,
+  .table td {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+
+/* ✅ Scroll top button smaller on mobile */
+@media (max-width: 650px) {
+  .scroll-top {
+    width: 44px;
+    height: 44px;
+    right: 14px;
+    bottom: 14px;
+    font-size: 16px;
+  }
+}
+
