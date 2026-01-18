@@ -302,11 +302,9 @@ Make it easy to paste into PPT/report.
     reply = resp.choices[0].message.content.strip()
 
     return jsonify({"ok": True, "report": reply})
-
-
-
-
-
+@app.route("/manifest.json")
+def manifest():
+    return app.send_static_file("manifest.json")
 
 if __name__ == "__main__":
     app.run(debug=True)
