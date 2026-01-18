@@ -1,20 +1,22 @@
 {
-  "name": "AI Smart Microgrid",
+  "name": "MicrogridAI",
   "short_name": "MicrogridAI",
+  "description": "AI Smart Microgrid Simulator for SDG 7 - Affordable & Clean Energy",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#0b1220",
-  "theme_color": "#111827",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "/static/icons/icon-192.jpg",
       "sizes": "192x192",
-      "type": "image/jpg"
+      "type": "image/jpeg"
     },
     {
       "src": "/static/icons/icon-512.jpg",
       "sizes": "512x512",
-      "type": "image/jpg"
+      "type": "image/jpeg"
     }
   ]
 }

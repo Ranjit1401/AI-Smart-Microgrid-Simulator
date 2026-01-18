@@ -7,6 +7,10 @@
   <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
   <title>AI Microgrid Simulator</title>
   <link rel="stylesheet" href="/static/style.css" />
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#2563eb">
+
+
 </head>
 
 <body>
@@ -322,6 +326,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="/static/script.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/static/service-worker.js")
+        .then(() => console.log("✅ Service Worker Registered"))
+        .catch((err) => console.log("❌ SW registration failed", err));
+    }
+  </script>
+
 </body>
 
 </html>
